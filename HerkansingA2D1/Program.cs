@@ -1,3 +1,6 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using HerkansingA2D1.Data;
 namespace HerkansingA2D1
 {
     public class Program
@@ -5,6 +8,8 @@ namespace HerkansingA2D1
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<HerkansingA2D1Context>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("HerkansingA2D1Context") ?? throw new InvalidOperationException("Connection string 'HerkansingA2D1Context' not found.")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
