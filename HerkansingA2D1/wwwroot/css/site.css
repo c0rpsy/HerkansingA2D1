@@ -18,5 +18,8 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
-}
+    background-image: linear-gradient(45deg, #FB8D8D 25%, transparent 25%), linear-gradient(-45deg, #FB8D8D 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #FB8D8D 75%), linear-gradient(-45deg, transparent 75%, #FB8D8D 75%);
+    background-size: 200px 200px;
+    background-position: 0 0, 0 100px, 100px -100px, -100px 0px;
+    margin-bottom: 60px;
+} 

@@ -6,11 +6,6 @@
 
 <style>
     /* All the styling for this page. Wont break (i hope) */
-    body {
-        background-image: linear-gradient(45deg, #FB8D8D 25%, transparent 25%), linear-gradient(-45deg, #FB8D8D 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #FB8D8D 75%), linear-gradient(-45deg, transparent 75%, #FB8D8D 75%);
-        background-size: 200px 200px;
-        background-position: 0 0, 0 100px, 100px -100px, -100px 0px;
-    } 
 
     h1 {
         color: black;
@@ -28,7 +23,75 @@
         margin: 20px 0;
     }
 
+    .product-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
 
+    .product-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 80%;
+        max-width: 600px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #ddd;
+    }
+
+        .product-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+    
+    .product-details {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .product-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .product-description {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 10px;
+    }
+
+    .product-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #BAF2BB;
+        padding-right: 10px;
+    }
+
+    .actions {
+        text-align: right;
+        margin: 10px;
+    }
+
+        .actions a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 10px;
+        }
+
+            .actions a:hover {
+                text-decoration: underline;
+            }
 </style>
 
 <h1>Menu</h1>
@@ -37,4 +100,17 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<div class="product-container">
+    @foreach (var item in Model)
+    {
+        <div class="product-card">
+            <div class="product-details">
+                <div class="product-name">@item.Name</div>
+                <div class="product-description">@item.Description</div>
+            </div>
+            <div class="product-price">€@item.Price</div>
+        </div>
+    }
+</div>
 
