@@ -14,7 +14,7 @@ a.navbar-brand {
 }
 
 a {
-  color: #0077cc;
+    color: #FFD5DE;
 }
 
 .btn-primary {
@@ -37,7 +37,7 @@ a {
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
@@ -46,9 +46,19 @@ button.accept-policy {
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    position: absolute;
+    bottom: 0;
+    background-color: #d80032;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }
+
+.footer-text {
+    color: black;
+}
+
+
+
+
+
