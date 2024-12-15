@@ -9,11 +9,13 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: linear-gradient(to right, #b3c0f7, #d9a3e8);
+    }
+
+    .center-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        height: 75vh; 
     }
 
     .login-container {
@@ -84,43 +86,30 @@
     .login-btn:hover {
         background-color: #5ca15c;
     }
-
-    .links {
-        margin-top: 15px;
-        font-size: 14px;
-    }
-
-    .links a {
-        color: #00a3e8;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-    .links a:hover {
-        text-decoration: underline;
-    }
 </style>
 
-<div class="login-container">
-    <h1>Inloggen</h1>
-    <!-- Login Form -->
-    <form asp-action="Login" method="post">
-        <div class="form-group">
-            <label for="Email">E-mailadres</label>
-            <input type="email" id="Email" name="Email" required />
-        </div>
+<div class="center-wrapper">
+    <div class="login-container">
+        <h1>Inloggen</h1>
+        <!-- Login Form -->
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label for="Email">E-mailadres</label>
+                <input type="email" id="Email" name="Email" required />
+            </div>
 
-        <div class="form-group">
-            <label for="Password">Wachtwoord</label>
-            <input type="password" id="Password" name="Password" required />
-        </div>
+            <div class="form-group">
+                <label for="Password">Wachtwoord</label>
+                <input type="password" id="Password" name="Password" required />
+            </div>
 
-        <div class="remember-me">
-            <input type="checkbox" id="RememberMe" name="RememberMe" />
-            <label for="RememberMe">Onthoud mij</label>
-        </div>
+            <div class="remember-me">
+                <input type="checkbox" id="RememberMe" name="RememberMe" />
+                <label for="RememberMe">Onthoud mij</label>
+            </div>
 
-        <button type="submit" class="login-btn">Inloggen</button>
-    </form>
+            <button type="submit" class="login-btn">Inloggen</button>
+        </form>
 
+    </div>
 </div>
