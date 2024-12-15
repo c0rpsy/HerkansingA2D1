@@ -1,53 +1,78 @@
 ﻿@model IEnumerable<HerkansingA2D1.Models.AppUser>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Welcome";
 }
 
-<h1>Index</h1>
+<style>
+    /* Compact styling for user options */
+    .user-index-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    .user-index-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .user-index-header h1 {
+            font-size: 28px;
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        .user-index-header p {
+            font-size: 16px;
+            color: #555;
+        }
+
+    .user-options {
+        display: flex;
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px; /* Smaller gap between buttons */
+        margin-top: 20px;
+    }
+
+    .user-option-button {
+        padding: 10px 20px; /* Smaller padding for buttons */
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        background-color: #007bff; /* Blue background for buttons */
+        color: white;
+    }
+
+        .user-option-button:hover {
+            transform: scale(1.05);
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .user-option-button:active {
+            transform: scale(0.95);
+        }
+</style>
+
+<div class="user-index-container">
+    <div class="user-index-header">
+        <h1>Welcome to Our App!</h1>
+        <p>Choose an option to continue:</p>
+    </div>
+
+    <div class="user-options">
+        <a asp-controller="AppUsers" asp-action="Create">
+            <button class="user-option-button">Register</button>
+        </a>
+        <a asp-controller="AppUsers" asp-action="Login">
+            <button class="user-option-button">Log In</button>
+        </a>
+    </div>
+</div>
+
