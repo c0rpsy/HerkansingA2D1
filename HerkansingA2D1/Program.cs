@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using HerkansingA2D1.Data;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 namespace HerkansingA2D1
 {
     public class Program
@@ -14,6 +15,20 @@ namespace HerkansingA2D1
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add authentication services
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/AppUsers/Login";
+                });
+
+            // Add authorization policies
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("OwnerOnly", policy => policy.RequireRole("Owner"));
+            });
+
 
             var app = builder.Build();
 
@@ -30,6 +45,8 @@ namespace HerkansingA2D1
 
             app.UseRouting();
 
+            // Enable authentication and authorization middleware
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

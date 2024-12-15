@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HerkansingA2D1.Data;
 using HerkansingA2D1.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace HerkansingA2D1.Controllers
 {
@@ -74,7 +77,7 @@ namespace HerkansingA2D1.Controllers
 
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Account");
             }
             return View(user);
         }
@@ -170,6 +173,41 @@ namespace HerkansingA2D1.Controllers
 
         // GET: AppUsers/Login
         public IActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: AppUsers/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string Email, string Password, bool RememberMe)
+        {
+            var user = await _context.AppUser.FirstOrDefaultAsync(u => u.Email == Email && u.Password == Password);
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = RememberMe
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                return RedirectToAction("Account");
+            }
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return View();
+        }
+
+        //GET: AppUsers/Account
+        public IActionResult Account()
         {
             return View();
         }

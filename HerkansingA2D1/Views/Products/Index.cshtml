@@ -121,9 +121,12 @@
 <h1>Menu</h1>
 <h5 class="text-outline">Vindt hier de perfecte snacks.</h5>
 
+
+@if (User.IsInRole("Owner")){
 <p class="center-button">
     <a asp-action="Create" class="create-button">Nieuw product</a>
 </p>
+}
 
 <div class="product-container">
     @foreach (var item in Model)
