@@ -86,6 +86,31 @@
     .login-btn:hover {
         background-color: darkgray;
     }
+
+    .register-btn {
+        display: inline-block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: lightgray;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+    }
+
+        .register-btn:hover {
+            background-color: darkgray;
+        }
+
+        .register-btn:link, .register-btn:visited {
+            color: white;
+        }
 </style>
 
 <div class="center-wrapper">
@@ -109,6 +134,10 @@
             </div>
 
             <button type="submit" class="login-btn">Inloggen</button>
+
+            <p> </p>
+            <p>Nog geen account?</p>
+            <a asp-action="Create" class="register-btn">Registreer</a>
         </form>
 
     </div>

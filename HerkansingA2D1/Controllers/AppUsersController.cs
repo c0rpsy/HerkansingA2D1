@@ -211,5 +211,14 @@ namespace HerkansingA2D1.Controllers
         {
             return View();
         }
+
+        // POST: AppUsers/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
