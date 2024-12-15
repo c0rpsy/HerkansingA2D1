@@ -22,7 +22,15 @@ namespace HerkansingA2D1.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Product.ToListAsync());
+            var products = await _context.Products.ToListAsync();
+            foreach (var product in products)
+            {
+                if (product.PromotionStart <= DateTime.Now && product.PromotionEnd >= DateTime.Now)
+                {
+                    product.Price = product.PromotionalPrice ?? product.Price;
+                }
+            }
+            return View(products);
         }
 
         // GET: Products/Details/5
@@ -73,7 +81,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -82,11 +90,9 @@ namespace HerkansingA2D1.Controllers
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,PromotionalPrice,PromotionStart,PromotionEnd")] Product product)
         {
             if (id != product.Id)
             {
@@ -115,6 +121,7 @@ namespace HerkansingA2D1.Controllers
             }
             return View(product);
         }
+
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
