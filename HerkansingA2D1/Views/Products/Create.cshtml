@@ -101,7 +101,7 @@
 <div class="create-container">
     <div class="create-card">
         <h2>Create New Product</h2>
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Name">Name</label>
                 <input asp-for="Name" class="form-control" />
@@ -118,6 +118,18 @@
                 <label asp-for="Price">Price</label>
                 <input asp-for="Price" class="form-control" type="number" step="0.01" />
                 <span asp-validation-for="Price" class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Image</label>
+                <input type="file" name="ImageFile" class="form-control" />
+                <span class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageUrl">Or Image URL</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="error"></span>
             </div>
 
             <div class="form-group">
@@ -154,7 +166,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
+        <script>
         document.addEventListener('DOMContentLoaded', function () {
             var enablePromotionCheckbox = document.getElementById('enablePromotion');
             var promotionFields = document.querySelector('.promotion-fields');

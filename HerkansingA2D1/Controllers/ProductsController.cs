@@ -62,16 +62,56 @@ namespace HerkansingA2D1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,PromotionalPrice,PromotionStart,PromotionEnd,ImageUrl")] Product product, IFormFile? ImageFile)
         {
-            if (ModelState.IsValid)
+            // Validate external URL if provided
+            if (!string.IsNullOrWhiteSpace(product.ImageUrl) && !Uri.IsWellFormedUriString(product.ImageUrl, UriKind.Absolute))
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("ImageUrl", "The provided image URL is not valid.");
             }
-            return View(product);
+
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("ModelState is invalid. Reloading form.");
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"Validation Error: {error.ErrorMessage}");
+                }
+                return View(product); // Reload the form if validation fails
+            }
+
+            // Handle file upload
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                if (!Directory.Exists(imagePath))
+                {
+                    Directory.CreateDirectory(imagePath);
+                }
+
+                var fileName = Path.GetFileName(ImageFile.FileName);
+                var filePath = Path.Combine(imagePath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(stream);
+                }
+
+                product.ImageUrl = "/images/" + fileName; // Use the uploaded image path
+            }
+
+            // Save product to database
+            _context.Add(product);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Product saved successfully.");
+            return RedirectToAction(nameof(Index));
         }
+
+
+
+
+
+
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
