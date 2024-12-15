@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<HerkansingA2D1.Models.OrderItem>
-
 @{
+    Layout = "_Layout"; // Ensure this matches your actual layout file name
     ViewData["Title"] = "Cart";
     decimal grandTotal = Model.Sum(item => item.Quantity * (item.PromotionPrice ?? item.Product.Price));
 }

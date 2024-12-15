@@ -62,7 +62,9 @@ namespace HerkansingA2D1.Controllers
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
-                    PromotionPrice = item.Product.PromotionalPrice ?? item.Product.Price
+                    PromotionPrice = (item.Product.PromotionStart <= DateTime.Now && item.Product.PromotionEnd >= DateTime.Now)
+                                     ? item.Product.PromotionalPrice
+                                     : item.Product.Price
                 }).ToList();
 
                 _context.Add(order);
@@ -71,6 +73,7 @@ namespace HerkansingA2D1.Controllers
             }
             return View(order);
         }
+
 
 
 
