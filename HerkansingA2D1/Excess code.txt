@@ -1,4 +1,7 @@
-﻿@model IEnumerable<HerkansingA2D1.Models.Product>
+﻿Need to make a navbar that is aesthetic :sparkle emojis:
+
+---
+@model IEnumerable<HerkansingA2D1.Models.Product>
 
 @{
     ViewData["Title"] = "Menu";
