@@ -96,6 +96,17 @@
     .promotion-fields {
         display: none;
     }
+
+    .centered-checkbox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .centered-checkbox label {
+            margin-left: 10px;
+        }
 </style>
 
 <div class="create-container">
@@ -132,7 +143,7 @@
                 <span asp-validation-for="ImageUrl" class="error"></span>
             </div>
 
-            <div class="form-group">
+            <div class="centered-checkbox">
                 <input type="checkbox" id="enablePromotion" />
                 <label for="enablePromotion">Enable Promotion</label>
             </div>
@@ -166,7 +177,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-        <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             var enablePromotionCheckbox = document.getElementById('enablePromotion');
             var promotionFields = document.querySelector('.promotion-fields');

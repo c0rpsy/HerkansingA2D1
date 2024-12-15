@@ -132,17 +132,43 @@ namespace HerkansingA2D1.Controllers
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,PromotionalPrice,PromotionStart,PromotionEnd")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,PromotionalPrice,PromotionStart,PromotionEnd,ImageUrl")] Product product, IFormFile? ImageFile)
         {
             if (id != product.Id)
             {
                 return NotFound();
             }
 
+            // Validate external URL if provided
+            if (!string.IsNullOrWhiteSpace(product.ImageUrl) && !Uri.IsWellFormedUriString(product.ImageUrl, UriKind.Absolute))
+            {
+                ModelState.AddModelError("ImageUrl", "The provided image URL is not valid.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Handle file upload
+                    if (ImageFile != null && ImageFile.Length > 0)
+                    {
+                        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                        if (!Directory.Exists(imagePath))
+                        {
+                            Directory.CreateDirectory(imagePath);
+                        }
+
+                        var fileName = Path.GetFileName(ImageFile.FileName);
+                        var filePath = Path.Combine(imagePath, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ImageFile.CopyToAsync(stream);
+                        }
+
+                        product.ImageUrl = "/images/" + fileName; // Use the uploaded image path
+                    }
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -161,6 +187,7 @@ namespace HerkansingA2D1.Controllers
             }
             return View(product);
         }
+
 
 
         // GET: Products/Delete/5
