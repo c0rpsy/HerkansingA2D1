@@ -25,7 +25,7 @@ namespace HerkansingA2D1.Controllers
             return View(await _context.AppUser.ToListAsync());
         }
 
-        // GET: AppUsers/Details/5
+        // GET: AppUsers/Details/5 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -54,15 +54,29 @@ namespace HerkansingA2D1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserName,Password,Email,Role")] AppUser appUser)
+        public async Task<IActionResult> Create([Bind("UserName,Password,Email")] AppUser user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appUser);
+                // Check if the Owner account exists
+                bool ownerExists = _context.AppUser.Any(u => u.Role == "Owner");
+
+                // If Owner doesn't exist, make this user the Owner
+                if (!ownerExists)
+                {
+                    user.Role = "Owner";
+                }
+                else
+                {
+                    // Default role for all other users is "Customer"
+                    user.Role = "Customer";
+                }
+
+                _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(appUser);
+            return View(user);
         }
 
         // GET: AppUsers/Edit/5
@@ -152,6 +166,12 @@ namespace HerkansingA2D1.Controllers
         private bool AppUserExists(int id)
         {
             return _context.AppUser.Any(e => e.Id == id);
+        }
+
+        // GET: AppUsers/Login
+        public IActionResult Login()
+        {
+            return View();
         }
     }
 }
