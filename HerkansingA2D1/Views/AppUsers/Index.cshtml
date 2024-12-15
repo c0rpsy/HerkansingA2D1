@@ -4,74 +4,73 @@
 }
 
 <style>
-    .user-index-container {
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .center-wrapper {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
-        background-color: #f8f9fa;
+        height: 75vh;
     }
 
-    .user-index-header {
+    .index-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px 20px;
         text-align: center;
-        margin-bottom: 20px;
+        width: 350px;
     }
 
-        .user-index-header h1 {
+        .index-container h1 {
             font-size: 28px;
-            color: black;
-            margin-bottom: 10px;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
 
-        .user-index-header p {
-            font-size: 16px;
+        .index-container p {
+            font-size: 14px;
             color: #555;
+            margin-bottom: 20px;
         }
 
     .user-options {
         display: flex;
-        flex-direction: column; 
-        gap: 10px; 
+        flex-direction: column;
+        gap: 10px;
         margin-top: 20px;
     }
 
     .user-option-button {
-        padding: 10px 20px; 
+        padding: 10px 20px;
         font-size: 16px;
         font-weight: bold;
         text-align: center;
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        background-color: #007bff; 
+        transition: background-color 0.3s;
+        background-color: lightslategray;
         color: white;
     }
 
         .user-option-button:hover {
-            transform: scale(1.05);
-            background-color: #0056b3; 
-        }
-
-        .user-option-button:active {
-            transform: scale(0.95);
+            background-color: darkgray;
         }
 </style>
 
-<div class="user-index-container">
-    <div class="user-index-header">
-        <h1>Welcome to Our App!</h1>
-        <p>Choose an option to continue:</p>
-    </div>
-
-    <div class="user-options">
-        <a asp-controller="AppUsers" asp-action="Create">
-            <button class="user-option-button">Register</button>
-        </a>
-        <a asp-controller="AppUsers" asp-action="Login">
-            <button class="user-option-button">Log In</button>
-        </a>
+<div class="center-wrapper">
+    <div class="index-container">
+        <div class="user-options">
+            <a asp-controller="AppUsers" asp-action="Create">
+                <button class="user-option-button">Register</button>
+            </a>
+            <a asp-controller="AppUsers" asp-action="Login">
+                <button class="user-option-button">Log In</button>
+            </a>
+        </div>
     </div>
 </div>
-

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HerkansingA2D1.Data;
 using HerkansingA2D1.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace HerkansingA2D1.Controllers
 {
@@ -25,7 +28,7 @@ namespace HerkansingA2D1.Controllers
             return View(await _context.AppUser.ToListAsync());
         }
 
-        // GET: AppUsers/Details/5
+        // GET: AppUsers/Details/5 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -54,15 +57,29 @@ namespace HerkansingA2D1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserName,Password,Email,Role")] AppUser appUser)
+        public async Task<IActionResult> Create([Bind("UserName,Password,Email")] AppUser user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appUser);
+                // Check if the Owner account exists
+                bool ownerExists = _context.AppUser.Any(u => u.Role == "Owner");
+
+                // If Owner doesn't exist, make this user the Owner
+                if (!ownerExists)
+                {
+                    user.Role = "Owner";
+                }
+                else
+                {
+                    // Default role for all other users is "Customer"
+                    user.Role = "Customer";
+                }
+
+                _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Account");
             }
-            return View(appUser);
+            return View(user);
         }
 
         // GET: AppUsers/Edit/5
@@ -152,6 +169,56 @@ namespace HerkansingA2D1.Controllers
         private bool AppUserExists(int id)
         {
             return _context.AppUser.Any(e => e.Id == id);
+        }
+
+        // GET: AppUsers/Login
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: AppUsers/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string Email, string Password, bool RememberMe)
+        {
+            var user = await _context.AppUser.FirstOrDefaultAsync(u => u.Email == Email && u.Password == Password);
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = RememberMe
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                return RedirectToAction("Account");
+            }
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return View();
+        }
+
+        //GET: AppUsers/Account
+        public IActionResult Account()
+        {
+            return View();
+        }
+
+        // POST: AppUsers/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

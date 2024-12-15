@@ -1,0 +1,144 @@
+﻿@model HerkansingA2D1.Controllers.AppUsersController
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    /* Page Styling */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .center-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 75vh; 
+    }
+
+    .login-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px 20px;
+        text-align: center;
+        width: 350px;
+    }
+
+    .login-container h1 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .login-container p {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 20px;
+    }
+
+    .remember-me label {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: lightslategray;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .login-btn:hover {
+        background-color: darkgray;
+    }
+
+    .register-btn {
+        display: inline-block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: lightgray;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+    }
+
+        .register-btn:hover {
+            background-color: darkgray;
+        }
+
+        .register-btn:link, .register-btn:visited {
+            color: white;
+        }
+</style>
+
+<div class="center-wrapper">
+    <div class="login-container">
+        <h1>Inloggen</h1>
+        <!-- Login Form -->
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label for="Email">E-mailadres</label>
+                <input type="email" id="Email" name="Email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Wachtwoord</label>
+                <input type="password" id="Password" name="Password" required />
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="RememberMe" name="RememberMe" />
+                <label for="RememberMe">Onthoud mij</label>
+            </div>
+
+            <button type="submit" class="login-btn">Inloggen</button>
+
+            <p> </p>
+            <p>Nog geen account?</p>
+            <a asp-action="Create" class="register-btn">Registreer</a>
+        </form>
+
+    </div>
+</div>
