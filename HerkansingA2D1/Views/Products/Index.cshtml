@@ -51,7 +51,20 @@
             border-radius: 8px;
         }
 
-    
+        .product-card .placeholder {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 8px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
     .product-details {
         flex: 1;
         padding: 10px;
@@ -112,7 +125,7 @@
             color: white;
         }
 
-    .center-button{
+    .center-button {
         text-align: center;
     }
 
@@ -124,17 +137,25 @@
 <h1>Menu</h1>
 <h5 class="text-outline">Vindt hier de perfecte snacks.</h5>
 
-
-@if (User.IsInRole("Owner")){
-<p class="center-button">
-    <a asp-action="Create" class="create-button">Nieuw product</a>
-</p>
+@if (User.IsInRole("Owner"))
+{
+    <p class="center-button">
+        <a asp-action="Create" class="create-button">Nieuw product</a>
+    </p>
 }
 
 <div class="product-container">
     @foreach (var product in Model)
     {
         <div class="product-card">
+            @if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                <img src="@product.ImageUrl" alt="@product.Name" />
+            }
+            else
+            {
+                <div class="placeholder">No Image</div>
+            }
             <div class="product-details">
                 <div class="product-name">@product.Name</div>
                 <div class="product-description">@product.Description</div>

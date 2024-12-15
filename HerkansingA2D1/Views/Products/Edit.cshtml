@@ -97,12 +97,23 @@
     .promotion-fields {
         display: none;
     }
+
+    .centered-checkbox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .centered-checkbox label {
+            margin-left: 10px;
+        }
 </style>
 
 <div class="edit-container">
     <div class="edit-card">
         <h2>Edit Product</h2>
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -121,6 +132,22 @@
                 <span asp-validation-for="Price" class="error"></span>
             </div>
             <div class="form-group">
+                <label>Current Image</label>
+                <div>
+                    <img src="@Model.ImageUrl" alt="Product Image" style="max-width: 100%; height: auto;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Change Image</label>
+                <input type="file" name="ImageFile" class="form-control" />
+                <span class="error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageUrl">Or Image URL</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="error"></span>
+            </div>
+            <div class="centered-checkbox">
                 <input type="checkbox" id="enablePromotion" @(isPromotionActive ? "checked" : "") />
                 <label for="enablePromotion">Enable Promotion</label>
             </div>

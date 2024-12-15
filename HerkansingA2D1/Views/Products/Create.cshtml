@@ -96,12 +96,23 @@
     .promotion-fields {
         display: none;
     }
+
+    .centered-checkbox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .centered-checkbox label {
+            margin-left: 10px;
+        }
 </style>
 
 <div class="create-container">
     <div class="create-card">
         <h2>Create New Product</h2>
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Name">Name</label>
                 <input asp-for="Name" class="form-control" />
@@ -121,6 +132,18 @@
             </div>
 
             <div class="form-group">
+                <label>Image</label>
+                <input type="file" name="ImageFile" class="form-control" />
+                <span class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageUrl">Or Image URL</label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="error"></span>
+            </div>
+
+            <div class="centered-checkbox">
                 <input type="checkbox" id="enablePromotion" />
                 <label for="enablePromotion">Enable Promotion</label>
             </div>
