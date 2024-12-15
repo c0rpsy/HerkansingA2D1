@@ -92,13 +92,37 @@
             .actions a:hover {
                 text-decoration: underline;
             }
+
+    .create-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: darkgrey;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .create-button:hover {
+            background-color: slategray;
+            color: white;
+        }
+
+    .center-button{
+        text-align: center;
+    }
 </style>
 
 <h1>Menu</h1>
 <h5 class="text-outline">Vindt hier de perfecte snacks.</h5>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="center-button">
+    <a asp-action="Create" class="create-button">Nieuw product</a>
 </p>
 
 <div class="product-container">

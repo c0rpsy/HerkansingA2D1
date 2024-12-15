@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using HerkansingA2D1.Models;
 
 namespace HerkansingA2D1.Data
 {
@@ -16,6 +17,7 @@ namespace HerkansingA2D1.Data
             string connection = @"Data Source=.;Initial Catalog=HerkansingA2D1;Integrated Security=true;TrustServerCertificate=true";
             optionsBuilder.UseSqlServer(connection);
         }
+        public DbSet<HerkansingA2D1.Models.AppUser> AppUser { get; set; } = default!;
 
     }
 }

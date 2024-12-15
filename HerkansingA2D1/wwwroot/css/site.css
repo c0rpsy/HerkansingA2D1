@@ -22,4 +22,8 @@ body {
     background-size: 200px 200px;
     background-position: 0 0, 0 100px, 100px -100px, -100px 0px;
     margin-bottom: 60px;
-} 
+}
+
+a {
+    color: #FFD5DE;
+}

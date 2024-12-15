@@ -23,10 +23,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Menu</a>
+                            <!-- This is the products, this is linked to the product controller. -->
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="Index">Account</a>
+                            <!-- Appuser not integrated with actual authentication. Not a problem for the functionality purposes of this app. -->
                         </li>
                     </ul>
                 </div>
@@ -40,7 +42,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
+        <div class="container footer-text">
             &copy; 2024 - HerkansingA2D1 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
