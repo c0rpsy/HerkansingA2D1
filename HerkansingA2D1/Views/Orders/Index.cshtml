@@ -1,0 +1,158 @@
+﻿@model IEnumerable<HerkansingA2D1.Models.OrderItem>
+
+@{
+    ViewData["Title"] = "Cart";
+    decimal grandTotal = Model.Sum(item => item.Quantity * (item.PromotionPrice ?? item.Product.Price));
+}
+
+<style>
+    h1 {
+        color: black;
+        font-weight: bold;
+        padding: 15px;
+        text-align: center;
+        margin: 0;
+    }
+
+    .order-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .order-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 80%;
+        max-width: 600px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #ddd;
+    }
+
+    .order-details {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .order-product-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .order-quantity {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 10px;
+    }
+
+    .order-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: black;
+        padding-right: 10px;
+    }
+
+    .order-total {
+        font-size: 16px;
+        font-weight: bold;
+        color: black;
+        padding-right: 10px;
+    }
+
+    .actions {
+        text-align: right;
+        margin: 10px;
+    }
+
+    .checkout-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: darkgrey;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .checkout-button:hover {
+            background-color: slategray;
+            color: white;
+        }
+
+    .center-button {
+        text-align: center;
+    }
+
+    .total-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 80%;
+        max-width: 600px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-top: 20px;
+    }
+
+    .total-label {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .total-amount {
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+<h1>Mandje</h1>
+
+<div class="order-container">
+    @foreach (var item in Model)
+    {
+        <div class="order-card">
+            <div class="order-details">
+                <div class="order-product-name">@item.Product.Name</div>
+                <div class="order-quantity">Aantal: @item.Quantity</div>
+            </div>
+            <div class="order-price">
+                @if (item.PromotionPrice.HasValue)
+                {
+                    <span>Promotieprijs: €@item.PromotionPrice</span>
+                }
+                else
+                {
+                    <span>Prijs: €@item.Product.Price</span>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="total-card">
+        <div class="total-label">Totaal:</div>
+        <div class="total-amount">€@grandTotal</div>
+    </div>
+</div>
+
+<p class="center-button">
+    <a asp-action="Create" class="checkout-button">Naar Bevestigen</a>
+</p>

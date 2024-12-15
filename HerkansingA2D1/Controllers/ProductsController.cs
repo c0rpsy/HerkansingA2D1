@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HerkansingA2D1.Data;
 using HerkansingA2D1.Models;
+using HerkansingA2D1.Services;
 
 namespace HerkansingA2D1.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly HerkansingA2D1Context _context;
+        private readonly ICartService _cartService;
 
-        public ProductsController(HerkansingA2D1Context context)
+        public ProductsController(HerkansingA2D1Context context, ICartService cartService)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
         }
 
         // GET: Products
@@ -226,6 +229,20 @@ namespace HerkansingA2D1.Controllers
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.Id == id);
+        }
+
+        // POST: Products/AddToCart/5
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int id, int quantity)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            _cartService.AddToCart(product, quantity);
+            return RedirectToAction("Index", "Orders");
         }
     }
 }

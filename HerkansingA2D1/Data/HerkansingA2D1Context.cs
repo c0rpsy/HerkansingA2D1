@@ -19,6 +19,8 @@ namespace HerkansingA2D1.Data
         }
 
         public DbSet<HerkansingA2D1.Models.Product> Products { get; set; } = default!;
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<HerkansingA2D1.Models.AppUser> AppUser { get; set; } = default!;
 
     }
