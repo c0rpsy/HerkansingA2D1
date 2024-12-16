@@ -227,7 +227,23 @@ namespace HerkansingA2D1.Controllers
                     return View(model);
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                if (user == null)
+                {
+                    _logger.LogWarning("User not found: {UserName}", model.UserName);
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+
+                // Ensure that user properties are not null before creating claims
+                if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Role))
+                {
+                    _logger.LogError("User properties contain null values.");
+                    ModelState.AddModelError(string.Empty, "User properties are invalid.");
+                    return View(model);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
@@ -260,9 +276,6 @@ namespace HerkansingA2D1.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-
-
 
 
 
