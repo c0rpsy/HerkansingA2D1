@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using HerkansingA2D1.Models;
+using HerkansingAPI.Models;
 
-namespace HerkansingA2D1.Data
+namespace HerkansingAPI.Data
 {
-    public class HerkansingA2D1Context : IdentityDbContext<AppUser>
+    public class HerkansingAPIContext : IdentityDbContext<AppUser>
     {
-        public HerkansingA2D1Context(DbContextOptions<HerkansingA2D1Context> options)
+        public HerkansingAPIContext(DbContextOptions<HerkansingAPIContext> options)
             : base(options)
         {
         }
@@ -17,17 +18,16 @@ namespace HerkansingA2D1.Data
             optionsBuilder.UseSqlServer(connection);
         }
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<AppUser>(entity => {
-                entity.ToTable("AppUser");
-            });
+            // Additional configuration code here
         }
 
-        public DbSet<Product> Products { get; set; } = default!;
-        public DbSet<AppUser> AppUser { get; set; } = default!;
-        public DbSet<Cart> Carts { get; set; } = default!;
-        public DbSet<CartItem> CartItems { get; set; } = default!;
+        public DbSet<Product> Products { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

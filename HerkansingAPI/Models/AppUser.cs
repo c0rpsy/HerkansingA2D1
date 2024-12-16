@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace HerkansingA2D1.Models
+namespace HerkansingAPI.Models
 {
     public class AppUser : IdentityUser
     {

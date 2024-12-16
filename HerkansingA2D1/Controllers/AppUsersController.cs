@@ -37,7 +37,7 @@ namespace HerkansingA2D1.Controllers
             }
 
             var appUser = await _context.AppUser
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id.ToString());
             if (appUser == null)
             {
                 return NotFound();
@@ -90,7 +90,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser.FindAsync(id);
+            var appUser = await _context.AppUser.FindAsync(id.ToString());
             if (appUser == null)
             {
                 return NotFound();
@@ -105,7 +105,7 @@ namespace HerkansingA2D1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,Password,Email,Role")] AppUser appUser)
         {
-            if (id != appUser.Id)
+            if (id.ToString() != appUser.Id)
             {
                 return NotFound();
             }
@@ -142,7 +142,7 @@ namespace HerkansingA2D1.Controllers
             }
 
             var appUser = await _context.AppUser
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id.ToString());
             if (appUser == null)
             {
                 return NotFound();
@@ -156,7 +156,7 @@ namespace HerkansingA2D1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var appUser = await _context.AppUser.FindAsync(id);
+            var appUser = await _context.AppUser.FindAsync(id.ToString());
             if (appUser != null)
             {
                 _context.AppUser.Remove(appUser);
@@ -166,7 +166,7 @@ namespace HerkansingA2D1.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppUserExists(int id)
+        private bool AppUserExists(string id)
         {
             return _context.AppUser.Any(e => e.Id == id);
         }

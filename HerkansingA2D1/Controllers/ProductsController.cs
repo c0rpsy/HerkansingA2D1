@@ -41,7 +41,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product
+            var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -58,8 +58,6 @@ namespace HerkansingA2D1.Controllers
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,PromotionalPrice,PromotionStart,PromotionEnd,ImageUrl")] Product product, IFormFile? ImageFile)
@@ -106,12 +104,6 @@ namespace HerkansingA2D1.Controllers
             Console.WriteLine("Product saved successfully.");
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
-
-
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -188,8 +180,6 @@ namespace HerkansingA2D1.Controllers
             return View(product);
         }
 
-
-
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -198,7 +188,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product
+            var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -213,10 +203,10 @@ namespace HerkansingA2D1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Product.Remove(product);
+                _context.Products.Remove(product);
             }
 
             await _context.SaveChangesAsync();
@@ -225,7 +215,7 @@ namespace HerkansingA2D1.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Product.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.Id == id);
         }
     }
 }

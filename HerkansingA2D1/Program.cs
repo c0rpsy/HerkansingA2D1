@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using HerkansingA2D1.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using HerkansingA2D1.Models;
+
 namespace HerkansingA2D1
 {
     public class Program
@@ -16,6 +19,11 @@ namespace HerkansingA2D1
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Add Identity services
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<HerkansingA2D1Context>()
+                .AddDefaultTokenProviders();
+
             // Add authentication services
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -28,7 +36,6 @@ namespace HerkansingA2D1
             {
                 options.AddPolicy("OwnerOnly", policy => policy.RequireRole("Owner"));
             });
-
 
             var app = builder.Build();
 
