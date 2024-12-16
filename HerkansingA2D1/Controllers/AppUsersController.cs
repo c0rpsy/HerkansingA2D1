@@ -10,22 +10,41 @@ using HerkansingA2D1.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+
+using HerkansingA2D1.Services;
 
 namespace HerkansingA2D1.Controllers
 {
     public class AppUsersController : Controller
     {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IOrderService _orderService;
         private readonly HerkansingA2D1Context _context;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly ILogger<AppUsersController> _logger;
 
-        public AppUsersController(HerkansingA2D1Context context)
+
+        public AppUsersController(HerkansingA2D1Context context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOrderService orderService, ILogger<AppUsersController> logger)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _orderService = orderService;
+            _logger = logger;
+        }
+
+
+        public async Task<IActionResult> Account()
+        {
+            var orders = await _context.Orders.ToListAsync();
+            return View(orders);
         }
 
         // GET: AppUsers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.AppUser.ToListAsync());
+            return View(await _context.Users.ToListAsync());
         }
 
         // GET: AppUsers/Details/5 
@@ -36,7 +55,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser
+            var appUser = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (appUser == null)
             {
@@ -53,34 +72,49 @@ namespace HerkansingA2D1.Controllers
         }
 
         // POST: AppUsers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserName,Password,Email")] AppUser user)
+        public async Task<IActionResult> Create(AppUser model)
         {
+            _logger.LogInformation($"Incoming UserName: '{model.UserName}', Password: '{model.Password}', Email: '{model.Email}'");
+
             if (ModelState.IsValid)
             {
-                // Check if the Owner account exists
-                bool ownerExists = _context.AppUser.Any(u => u.Role == "Owner");
-
-                // If Owner doesn't exist, make this user the Owner
-                if (!ownerExists)
+                var user = new AppUser
                 {
-                    user.Role = "Owner";
-                }
-                else
+                    UserName = model.UserName.Trim(),
+                    NormalizedUserName = model.UserName.Trim().ToUpper(),
+                    Email = model.Email.Trim(),
+                    NormalizedEmail = model.Email.Trim().ToUpper()
+                };
+
+                _logger.LogInformation($"Normalized UserName: '{user.NormalizedUserName}', Normalized Email: '{user.NormalizedEmail}'");
+
+                bool ownerExists = _context.Users.Any(u => u.Role == "Owner");
+                user.Role = ownerExists ? "Customer" : "Owner";
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
                 {
-                    // Default role for all other users is "Customer"
-                    user.Role = "Customer";
+                    _logger.LogInformation("User created successfully.");
+                    return RedirectToAction("Account");
                 }
 
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Account");
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogError($"Error: {error.Code} - {error.Description}");
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-            return View(user);
+            else
+            {
+                _logger.LogWarning("Model state is invalid.");
+            }
+
+            return View(model);
         }
+
 
         // GET: AppUsers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -90,7 +124,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser.FindAsync(id);
+            var appUser = await _context.Users.FindAsync(id);
             if (appUser == null)
             {
                 return NotFound();
@@ -99,8 +133,6 @@ namespace HerkansingA2D1.Controllers
         }
 
         // POST: AppUsers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,Password,Email,Role")] AppUser appUser)
@@ -141,7 +173,7 @@ namespace HerkansingA2D1.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUser
+            var appUser = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (appUser == null)
             {
@@ -156,10 +188,10 @@ namespace HerkansingA2D1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var appUser = await _context.AppUser.FindAsync(id);
+            var appUser = await _context.Users.FindAsync(id);
             if (appUser != null)
             {
-                _context.AppUser.Remove(appUser);
+                _context.Users.Remove(appUser);
             }
 
             await _context.SaveChangesAsync();
@@ -168,7 +200,7 @@ namespace HerkansingA2D1.Controllers
 
         private bool AppUserExists(int id)
         {
-            return _context.AppUser.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
 
         // GET: AppUsers/Login
@@ -182,35 +214,21 @@ namespace HerkansingA2D1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string Email, string Password, bool RememberMe)
         {
-            var user = await _context.AppUser.FirstOrDefaultAsync(u => u.Email == Email && u.Password == Password);
+            var user = await _userManager.FindByEmailAsync(Email);
             if (user != null)
             {
-                var claims = new List<Claim>
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, Password, RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role)
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = RememberMe
-                };
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-                return RedirectToAction("Account");
+                    return RedirectToAction("Account");
+                }
             }
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View();
         }
 
-        //GET: AppUsers/Account
-        public IActionResult Account()
-        {
-            return View();
-        }
+
+
 
         // POST: AppUsers/Logout
         [HttpPost]

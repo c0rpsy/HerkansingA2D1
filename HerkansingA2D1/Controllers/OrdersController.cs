@@ -1,6 +1,7 @@
 ﻿using HerkansingA2D1.Data;
 using HerkansingA2D1.Models;
 using HerkansingA2D1.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,18 +11,27 @@ namespace HerkansingA2D1.Controllers
     {
         private readonly HerkansingA2D1Context _context;
         private readonly ICartService _cartService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public OrdersController(HerkansingA2D1Context context, ICartService cartService)
+        private readonly IOrderService _orderService;
+        public OrdersController(HerkansingA2D1Context context, ICartService cartService, UserManager<AppUser> userManager, IOrderService orderService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _orderService = orderService;
         }
 
-        // GET: Orders
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var cart = _cartService.GetCart();
-            return View(cart);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+            var orders = await _orderService.GetOrdersByUserIdAsync(user.Id);
+            return View(orders);
         }
 
         // GET: Orders/Details/5
@@ -67,15 +77,20 @@ namespace HerkansingA2D1.Controllers
                                      : item.Product.Price
                 }).ToList();
 
+                // Link the order to the current user
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+                order.UserId = user.Id;
+
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
         }
-
-
-
 
 
 

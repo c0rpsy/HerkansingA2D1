@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using HerkansingA2D1.Data;
-using System.Globalization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using HerkansingA2D1.Services;
+using HerkansingA2D1.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace HerkansingA2D1
 {
@@ -23,9 +25,16 @@ namespace HerkansingA2D1
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add Identity services
+            builder.Services.AddIdentity<AppUser, IdentityRole<int>>()
+                .AddEntityFrameworkStores<HerkansingA2D1Context>()
+                .AddDefaultTokenProviders();
+
             // Register ICartService
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             // Add session services
             builder.Services.AddDistributedMemoryCache();

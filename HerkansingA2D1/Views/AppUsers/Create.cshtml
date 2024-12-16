@@ -26,36 +26,36 @@
         width: 350px;
     }
 
-    .create-container h1 {
-        font-size: 28px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
+        .create-container h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
 
-    .create-container p {
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 20px;
-    }
+        .create-container p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
 
     .form-group {
         margin-bottom: 20px;
         text-align: left;
     }
 
-    .form-group label {
-        font-size: 14px;
-        color: #333;
-        font-weight: bold;
-    }
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+        }
 
-    .form-group input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 14px;
-    }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
 
     .create-btn {
         width: 100%;
@@ -70,17 +70,16 @@
         transition: background-color 0.3s;
     }
 
-    .create-btn:hover {
-        background-color: darkgray;
-    }
+        .create-btn:hover {
+            background-color: darkgray;
+        }
 </style>
 
 <div class="center-wrapper">
     <div class="create-container">
-        <h1>Registreren</h1>
-        <hr />
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h1>Register</h1>
+        <hr/>
+        <form asp-action="Create" method="post">
             <div class="form-group">
                 <label asp-for="UserName" class="control-label"></label>
                 <input asp-for="UserName" class="form-control" />
@@ -88,7 +87,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -97,7 +96,7 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="create-btn" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -235,6 +235,11 @@ namespace HerkansingA2D1.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(int id, int quantity)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "AppUsers");
+            }
+
             var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
@@ -244,5 +249,6 @@ namespace HerkansingA2D1.Controllers
             _cartService.AddToCart(product, quantity);
             return RedirectToAction("Index", "Orders");
         }
+
     }
 }
