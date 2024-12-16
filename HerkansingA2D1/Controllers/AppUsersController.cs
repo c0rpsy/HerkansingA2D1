@@ -74,10 +74,8 @@ namespace HerkansingA2D1.Controllers
         // POST: AppUsers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AppUser model)
+        public async Task<IActionResult> Create(AppUserViewModel model)
         {
-            _logger.LogInformation($"Incoming UserName: '{model.UserName}', Password: '{model.Password}', Email: '{model.Email}'");
-
             if (ModelState.IsValid)
             {
                 var user = new AppUser
@@ -88,34 +86,37 @@ namespace HerkansingA2D1.Controllers
                     NormalizedEmail = model.Email.Trim().ToUpper()
                 };
 
-                _logger.LogInformation($"Normalized UserName: '{user.NormalizedUserName}', Normalized Email: '{user.NormalizedEmail}'");
-
                 bool ownerExists = _context.Users.Any(u => u.Role == "Owner");
                 user.Role = ownerExists ? "Customer" : "Owner";
 
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
+                try
                 {
-                    _logger.LogInformation("User created successfully.");
-                    return RedirectToAction("Account");
-                }
+                    var result = await _userManager.CreateAsync(user, model.Password);
 
-                foreach (var error in result.Errors)
-                {
-                    _logger.LogError($"Error: {error.Code} - {error.Description}");
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created successfully.");
+                        return RedirectToAction("Account");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-            }
-            else
-            {
-                _logger.LogWarning("Model state is invalid.");
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred while creating user.");
+                    ModelState.AddModelError(string.Empty, "An error occurred while creating the user. Please try again.");
+                }
             }
 
             return View(model);
         }
 
 
+
+        /*
         // GET: AppUsers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -165,6 +166,7 @@ namespace HerkansingA2D1.Controllers
             return View(appUser);
         }
 
+        */
         // GET: AppUsers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -212,20 +214,55 @@ namespace HerkansingA2D1.Controllers
         // POST: AppUsers/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string Email, string Password, bool RememberMe)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var user = await _userManager.FindByEmailAsync(Email);
-            if (user != null)
+            if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, Password, RememberMe, lockoutOnFailure: false);
+                _logger.LogInformation("Attempting to log in user: {UserName}", model.UserName);
+
+                if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Password))
+                {
+                    _logger.LogWarning("UserName or Password is null or empty.");
+                    ModelState.AddModelError(string.Empty, "UserName and Password are required.");
+                    return View(model);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Account");
+                    _logger.LogInformation("User logged in successfully.");
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return View("Lockout");
+                }
+                else
+                {
+                    _logger.LogWarning("Invalid login attempt for user: {UserName}", model.UserName);
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 }
             }
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return View();
+            else
+            {
+                _logger.LogWarning("Model state is invalid.");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        _logger.LogWarning("Model state error: {ErrorMessage}", error.ErrorMessage);
+                    }
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
         }
+
+
+
 
 
 

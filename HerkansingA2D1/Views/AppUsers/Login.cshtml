@@ -1,4 +1,4 @@
-﻿@model HerkansingA2D1.Controllers.AppUsersController
+﻿@model HerkansingA2D1.Models.LoginViewModel
 
 @{
     ViewData["Title"] = "Login";
@@ -119,27 +119,24 @@
         <!-- Login Form -->
         <form asp-action="Login" method="post">
             <div class="form-group">
-                <label for="Email">E-mailadres</label>
-                <input type="email" id="Email" name="Email" required />
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                <label for="Password">Wachtwoord</label>
-                <input type="password" id="Password" name="Password" required />
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-
-            <div class="remember-me">
-                <input type="checkbox" id="RememberMe" name="RememberMe" />
-                <label for="RememberMe">Onthoud mij</label>
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="remember-me" />
+                    <label asp-for="RememberMe" class="remember-me"></label>
+                </div>
             </div>
-
-            <button type="submit" class="login-btn">Inloggen</button>
-
-            <p> </p>
-            <p>Nog geen account?</p>
-            <a asp-action="Create" class="register-btn">Registreer</a>
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-primary" />
+            </div>
         </form>
-
-
     </div>
 </div>
